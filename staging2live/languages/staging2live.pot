@@ -1,9 +1,304 @@
+# Copyright (C) 2025 Staging2Live
+# This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Staging2Live 0.1.0\n"
+"Project-Id-Version: Staging2Live 0.1.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/staging2live\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Staging2Live\n"
+"POT-Creation-Date: 2025-08-14T10:24:33+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: staging2live\n"
 
-# Placeholder POT file. Use wp i18n make-pot to regenerate.
+#. Plugin Name of the plugin
+#. Author of the plugin
+#: staging2live.php
+#: includes/Admin/AdminPage.php:13
+#: includes/Admin/AdminPage.php:14
+#: includes/Admin/AdminPage.php:143
+msgid "Staging2Live"
+msgstr ""
+
+#. Description of the plugin
+#: staging2live.php
+msgid "Backup a staging site and restore it to a live site with URL replacement, zipping, and admin management."
+msgstr ""
+
+#: includes/Admin/AdminPage.php:43
+msgid "General Settings"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:45
+msgid "Configure URLs and backup directory for Staging2Live."
+msgstr ""
+
+#: includes/Admin/AdminPage.php:52
+msgid "Staging URL"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:60
+msgid "Live URL"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:68
+msgid "Backup Directory"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:76
+msgid "Retention (number of backups to keep)"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:84
+msgid "Create safety backup before restore"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:134
+msgid "Enable automatic safety backup before restore"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:145
+#: staging2live.php:115
+msgid "Backups"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:146
+msgid "Settings"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:174
+msgid "Upload Backup Files"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:175
+msgid "Upload a matching pair of ZIP and JSON files with the same basename."
+msgstr ""
+
+#: includes/Admin/AdminPage.php:180
+msgid "ZIP file"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:181
+msgid "JSON file"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:184
+msgid "Unknown"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:188
+msgid "Server upload limits:"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:188
+#, php-format
+msgid "Max upload size: %s (upload_max_filesize=%s, post_max_size=%s, max_file_uploads=%s)"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:189
+msgid "Upload Backup"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:195
+msgid "Orphaned Files"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:196
+msgid "These files have no matching ZIP/JSON pair. You can delete them."
+msgstr ""
+
+#: includes/Admin/AdminPage.php:197
+msgid "File"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:197
+msgid "Action"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:200
+msgid "Delete this file?"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:200
+#: includes/Admin/AdminPage.php:272
+msgid "Delete"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:212
+msgid "Backup deleted."
+msgstr ""
+
+#: includes/Admin/AdminPage.php:216
+msgid "Restore completed."
+msgstr ""
+
+#: includes/Admin/AdminPage.php:216
+msgid "Restore failed. Check logs."
+msgstr ""
+
+#: includes/Admin/AdminPage.php:220
+msgid "Backup created."
+msgstr ""
+
+#: includes/Admin/AdminPage.php:220
+msgid "Backup failed. Check logs."
+msgstr ""
+
+#: includes/Admin/AdminPage.php:224
+msgid "Log cleared."
+msgstr ""
+
+#: includes/Admin/AdminPage.php:224
+msgid "Failed to clear log."
+msgstr ""
+
+#: includes/Admin/AdminPage.php:231
+msgid "Create Backup"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:232
+msgid "Download Log"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:233
+msgid "Clear Log"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:235
+msgid "Available backups"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:238
+msgid "Backup"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:239
+msgid "Size"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:240
+msgid "Site URL"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:241
+msgid "Admin"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:242
+msgid "Date"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:243
+msgid "Actions"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:246
+msgid "No backups found."
+msgstr ""
+
+#: includes/Admin/AdminPage.php:267
+msgid "Force URLs to current site"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:268
+msgid "Restore"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:270
+msgid "Download Zip"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:271
+msgid "Download JSON"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:272
+msgid "Delete this backup?"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:282
+msgid "Backup directory"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:282
+msgid "Writable"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:282
+msgid "Not writable"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:283
+msgid "WP-CLI available"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:283
+#: includes/Admin/AdminPage.php:284
+#: includes/Admin/AdminPage.php:287
+#: includes/Admin/AdminPage.php:288
+msgid "Yes"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:283
+#: includes/Admin/AdminPage.php:284
+#: includes/Admin/AdminPage.php:287
+#: includes/Admin/AdminPage.php:288
+msgid "No"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:284
+msgid "ZipArchive"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:287
+msgid "mysqldump"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:288
+msgid "mysql (client)"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:289
+msgid "Diagnostics"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:291
+msgid "Check"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:291
+msgid "Value"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:291
+msgid "Status"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:364
+#: includes/Admin/AdminPage.php:397
+#: includes/Admin/AdminPage.php:411
+#: includes/Admin/AdminPage.php:436
+#: includes/Admin/AdminPage.php:471
+#: includes/Admin/AdminPage.php:522
+#: includes/Admin/AdminPage.php:542
+#: includes/Admin/AdminPage.php:559
+msgid "Insufficient permissions"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:420
+#: includes/Admin/AdminPage.php:443
+#: includes/Admin/AdminPage.php:460
+#: includes/Admin/AdminPage.php:479
+msgid "Invalid file"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:487
+msgid "File not found"
+msgstr ""
+
+#: includes/Admin/AdminPage.php:530
+msgid "Log file not found"
+msgstr ""

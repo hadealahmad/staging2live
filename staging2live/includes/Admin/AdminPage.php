@@ -165,6 +165,42 @@ class AdminPage {
 		do_settings_sections('staging2live');
 		submit_button();
 		echo '</form>';
+
+		// Upload backups UI
+		$options = get_option(self::OPTION_NAME, []);
+		$backupDir = isset($options['backup_dir']) ? $options['backup_dir'] : (WP_CONTENT_DIR . '/staging2live-backups');
+		$backupDir = wp_normalize_path(untrailingslashit($backupDir));
+		echo '<hr />';
+		echo '<h2>' . esc_html__('Upload Backup Files', 'staging2live') . '</h2>';
+		echo '<p>' . esc_html__('Upload a matching pair of ZIP and JSON files with the same basename.', 'staging2live') . '</p>';
+		echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '" enctype="multipart/form-data">';
+		echo '<input type="hidden" name="action" value="stl_upload_backup" />';
+		echo wp_nonce_field('stl_upload_backup', '_wpnonce', true, false);
+		echo '<table class="form-table"><tbody>';
+		echo '<tr><th>' . esc_html__('ZIP file', 'staging2live') . '</th><td><input type="file" name="stl_zip" accept=".zip" required /></td></tr>';
+		echo '<tr><th>' . esc_html__('JSON file', 'staging2live') . '</th><td><input type="file" name="stl_json" accept="application/json,.json" required /></td></tr>';
+		echo '</tbody></table>';
+		$max_upload = wp_max_upload_size();
+		$max_upload_h = $max_upload ? size_format($max_upload) : __('Unknown', 'staging2live');
+		$ini_upload = ini_get('upload_max_filesize');
+		$ini_post = ini_get('post_max_size');
+		$ini_files = ini_get('max_file_uploads');
+		echo '<p><em>' . esc_html__('Server upload limits:', 'staging2live') . ' ' . esc_html(sprintf(__('Max upload size: %s (upload_max_filesize=%s, post_max_size=%s, max_file_uploads=%s)', 'staging2live'), $max_upload_h, $ini_upload, $ini_post, $ini_files)) . '</em></p>';
+		submit_button(__('Upload Backup', 'staging2live'));
+		echo '</form>';
+
+		// Orphaned files list
+		$orphans = self::find_orphaned_files($backupDir);
+		if (!empty($orphans)) {
+			echo '<h3>' . esc_html__('Orphaned Files', 'staging2live') . '</h3>';
+			echo '<p>' . esc_html__('These files have no matching ZIP/JSON pair. You can delete them.', 'staging2live') . '</p>';
+			echo '<table class="widefat striped"><thead><tr><th>' . esc_html__('File', 'staging2live') . '</th><th>' . esc_html__('Action', 'staging2live') . '</th></tr></thead><tbody>';
+			foreach ($orphans as $file) {
+				$del = wp_nonce_url(admin_url('admin-post.php?action=stl_delete_orphan&file=' . rawurlencode(basename($file))), 'stl_delete_orphan_' . basename($file));
+				echo '<tr><td>' . esc_html(basename($file)) . '</td><td><a class="button button-link-delete" onclick="return confirm(\'' . esc_js(__('Delete this file?', 'staging2live')) . '\');" href="' . esc_url($del) . '">' . esc_html__('Delete', 'staging2live') . '</a></td></tr>';
+			}
+			echo '</tbody></table>';
+		}
 	}
 
 	private static function render_backups_tab(): void {
@@ -298,6 +334,76 @@ class AdminPage {
 			return strcmp($bd, $ad);
 		});
 		return $items;
+	}
+
+	private static function find_orphaned_files(string $backupDir): array {
+		$files = @scandir($backupDir);
+		if ($files === false) return [];
+		$zips = [];
+		$jsons = [];
+		foreach ($files as $f) {
+			if ($f === '.' || $f === '..') continue;
+			$path = $backupDir . '/' . $f;
+			if (!is_file($path)) continue;
+			// Ignore internal state file
+			if ($f === '.staging2live-siteurl.json') continue;
+			if (substr($f, -4) === '.zip') $zips[] = substr($f, 0, -4);
+			if (substr($f, -5) === '.json') $jsons[] = substr($f, 0, -5);
+		}
+		$orphans = [];
+		foreach ($zips as $b) {
+			if (!in_array($b, $jsons, true)) $orphans[] = $backupDir . '/' . $b . '.zip';
+		}
+		foreach ($jsons as $b) {
+			if (!in_array($b, $zips, true)) $orphans[] = $backupDir . '/' . $b . '.json';
+		}
+		return $orphans;
+	}
+
+	public static function handle_upload_backup(): void {
+		if (!current_user_can('manage_options')) wp_die(__('Insufficient permissions', 'staging2live'));
+		check_admin_referer('stl_upload_backup');
+		$options = get_option(self::OPTION_NAME, []);
+		$backupDir = isset($options['backup_dir']) ? $options['backup_dir'] : (WP_CONTENT_DIR . '/staging2live-backups');
+		$backupDir = wp_normalize_path(untrailingslashit($backupDir));
+		wp_mkdir_p($backupDir);
+
+		$zip = isset($_FILES['stl_zip']) ? $_FILES['stl_zip'] : null;
+		$json = isset($_FILES['stl_json']) ? $_FILES['stl_json'] : null;
+		if (!$zip || !$json || $zip['error'] !== UPLOAD_ERR_OK || $json['error'] !== UPLOAD_ERR_OK) {
+			wp_safe_redirect(add_query_arg(['page' => 'staging2live', 'tab' => 'settings', 'upload' => 'error'], admin_url('admin.php')));
+			exit;
+		}
+		$zipName = pathinfo($zip['name'], PATHINFO_FILENAME);
+		$jsonName = pathinfo($json['name'], PATHINFO_FILENAME);
+		if ($zipName !== $jsonName) {
+			wp_safe_redirect(add_query_arg(['page' => 'staging2live', 'tab' => 'settings', 'upload' => 'mismatch'], admin_url('admin.php')));
+			exit;
+		}
+		$base = \Staging2Live\Services\FilenameService::sanitize_human_filename_component($zipName);
+		$destZip = $backupDir . '/' . $base . '.zip';
+		$destJson = $backupDir . '/' . $base . '.json';
+		if (!@move_uploaded_file($zip['tmp_name'], $destZip) || !@move_uploaded_file($json['tmp_name'], $destJson)) {
+			@unlink($destZip);
+			@unlink($destJson);
+			wp_safe_redirect(add_query_arg(['page' => 'staging2live', 'tab' => 'settings', 'upload' => 'ioerror'], admin_url('admin.php')));
+			exit;
+		}
+		wp_safe_redirect(add_query_arg(['page' => 'staging2live', 'tab' => 'backups', 'uploaded' => 1], admin_url('admin.php')));
+		exit;
+	}
+
+	public static function handle_delete_orphan(): void {
+		if (!current_user_can('manage_options')) wp_die(__('Insufficient permissions', 'staging2live'));
+		$file = isset($_GET['file']) ? wp_basename(rawurldecode(wp_unslash($_GET['file']))) : '';
+		check_admin_referer('stl_delete_orphan_' . $file);
+		$options = get_option(self::OPTION_NAME, []);
+		$backupDir = isset($options['backup_dir']) ? $options['backup_dir'] : (WP_CONTENT_DIR . '/staging2live-backups');
+		$backupDir = wp_normalize_path(untrailingslashit($backupDir));
+		$path = $backupDir . '/' . $file;
+		if (is_file($path)) @unlink($path);
+		wp_safe_redirect(add_query_arg(['page' => 'staging2live', 'tab' => 'settings'], admin_url('admin.php')));
+		exit;
 	}
 
 	public static function handle_delete_backup(): void {

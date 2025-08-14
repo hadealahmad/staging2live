@@ -2,7 +2,7 @@
 /*
 Plugin Name: Staging2Live
 Description: Backup a staging site and restore it to a live site with URL replacement, zipping, and admin management.
-Version: 0.1.0
+Version: 0.1.1
 Author: Staging2Live
 License: GPLv2 or later
 Text Domain: staging2live
@@ -140,6 +140,15 @@ add_action('admin_post_stl_download_log', function () {
 
 add_action('admin_post_stl_clear_log', function () {
 	\Staging2Live\Admin\AdminPage::handle_clear_log();
+});
+
+// Upload backups and delete orphan handlers
+add_action('admin_post_stl_upload_backup', function () {
+	\Staging2Live\Admin\AdminPage::handle_upload_backup();
+});
+
+add_action('admin_post_stl_delete_orphan', function () {
+	\Staging2Live\Admin\AdminPage::handle_delete_orphan();
 });
 
 // Optional CLI bootstrap
