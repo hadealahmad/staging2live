@@ -1,12 +1,20 @@
 <?php
 /*
-Plugin Name: Staging2Live
-Description: Backup a staging site and restore it to a live site with URL replacement, zipping, and admin management.
-Version: 0.1.1
-Author: Staging2Live
-License: GPLv2 or later
-Text Domain: staging2live
-*/
+ * Plugin Name: Staging2Live
+ * Plugin URI: https://github.com/hadealahmad/staging2live
+ * Description: Backup a staging site and restore it to a live site with URL replacement, zipping, and admin management.
+ * Version: 0.1.2
+ * Author: Hadi Alahmad
+ * Author URI: https://hadealahmad.com
+ * Text Domain: staging2live
+ * Domain Path: /languages
+ * Requires at least: 5.0
+ * Tested up to: 6.8
+ * Requires PHP: 7.4
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Network: false
+ */
 
 if (!defined('ABSPATH')) {
 	exit;

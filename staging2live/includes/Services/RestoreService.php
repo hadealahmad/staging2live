@@ -6,7 +6,38 @@ if (!defined('ABSPATH')) {
 }
 
 class RestoreService {
-    public function restore_from_backup(string $zipPath, array $options = []): array {
+	/**
+	 * Temporary directory prefix used during restore operations.
+	 */
+	private const TEMP_DIR_PREFIX = 'staging2live-temp-restore-';
+
+	/**
+	 * Name of the backups directory to preserve during file restore.
+	 */
+	private const BACKUPS_DIRNAME = 'staging2live-backups';
+
+	/**
+	 * File name used to persist the current site URLs before DB import.
+	 */
+	private const SITEURL_META_FILENAME = '.staging2live-siteurl.json';
+
+	/**
+	 * Maximum depth to search for `wp-content` inside extracted archives.
+	 */
+	private const WP_CONTENT_SEARCH_MAX_DEPTH = 3;
+	/**
+	 * Restore a site from a Staging2Live backup zip.
+	 *
+	 * - Extracts the archive to a temp directory
+	 * - Restores files under `wp-content` while preserving this plugin and backup dir
+	 * - Imports the database and reconciles `$table_prefix`
+	 * - Optionally enforces the current live URL
+	 *
+	 * @param string $zipPath Absolute path to the backup zip
+	 * @param array $options Supported: ['force_current_url' => bool]
+	 * @return array{success:bool, message?:string}
+	 */
+	public function restore_from_backup(string $zipPath, array $options = []): array {
 		$zipPath = wp_normalize_path($zipPath);
 		if (!file_exists($zipPath)) {
 			\Staging2Live\Services\LogService::write('Restore failed: zip not found ' . $zipPath);
@@ -36,8 +67,8 @@ class RestoreService {
         $currentHomeUrl = rtrim(home_url(), '/');
         $this->persist_current_site_urls($prevBackupDir, $currentSiteUrl, $currentHomeUrl);
 
-        // Extract zip to temp
-		$tmpDir = WP_CONTENT_DIR . '/staging2live-temp-restore-' . time();
+		// Extract zip to temp
+		$tmpDir = WP_CONTENT_DIR . '/' . self::TEMP_DIR_PREFIX . time();
 		wp_mkdir_p($tmpDir);
 		$zipSvc = new ZipService();
 		if (!$zipSvc->extract_backup_zip($zipPath, $tmpDir)) {
@@ -134,6 +165,14 @@ class RestoreService {
 		return ['success' => true];
 	}
 
+	/**
+	 * Recursively copy a directory, skipping symlinks, the backups dir, and any source paths
+	 * that start with one of the provided exclude prefixes.
+	 *
+	 * @param string $source
+	 * @param string $destination
+	 * @param string[] $excludeSourcePrefixes Absolute, normalized paths to skip (prefix match)
+	 */
 	private function copy_directory(string $source, string $destination, array $excludeSourcePrefixes = []): void {
 		$source = wp_normalize_path($source);
 		$destination = wp_normalize_path($destination);
@@ -144,7 +183,7 @@ class RestoreService {
 			$src = $source . '/' . $item;
 			$dst = $destination . '/' . $item;
 			// Skip backup directory itself
-			if (basename($src) === 'staging2live-backups') continue;
+			if (basename($src) === self::BACKUPS_DIRNAME) continue;
 			// No symlinks
 			if (is_link($src)) continue;
 			// Skip excluded source prefixes (e.g., this plugin inside the backup's plugins dir)
@@ -164,6 +203,12 @@ class RestoreService {
 		}
 	}
 
+	/**
+	 * Remove all contents from `wp-content` except for provided exclusions and the running plugin.
+	 *
+	 * @param string $targetRoot Absolute path to the `wp-content` directory
+	 * @param string[] $excludeDirs Absolute paths that should not be removed (prefix match)
+	 */
 	private function clear_target_wp_content(string $targetRoot, array $excludeDirs): void {
 		$targetRoot = wp_normalize_path(untrailingslashit($targetRoot));
 		$items = scandir($targetRoot);
@@ -193,6 +238,9 @@ class RestoreService {
 		}
 	}
 
+	/**
+	 * Remove all plugins except for this plugin.
+	 */
 	private function clear_plugins_directory_preserving_self(string $pluginsDir): void {
 		$pluginsDir = wp_normalize_path(untrailingslashit($pluginsDir));
 		$selfDir = wp_normalize_path(untrailingslashit(STL_PLUGIN_DIR));
@@ -213,6 +261,7 @@ class RestoreService {
 		}
 	}
 
+	/** Ensure `$table_prefix` in wp-config.php matches the imported database prefix. */
 	private function reconcile_table_prefix(string $desiredPrefix = ''): void {
 		$currentPrefix = $GLOBALS['table_prefix'];
 		$desiredPrefix = $desiredPrefix !== '' ? $desiredPrefix : $currentPrefix;
@@ -260,6 +309,7 @@ class RestoreService {
 		file_put_contents($config, $updated);
 	}
 
+	/** Try to determine the imported DB prefix from the backup's metadata. */
 	private function detect_imported_prefix_from_metadata(string $zipPath): string {
 		$dir = dirname($zipPath);
 		$base = basename($zipPath, '.zip');
@@ -272,6 +322,7 @@ class RestoreService {
 		return $GLOBALS['table_prefix'];
 	}
 
+	/** Parse a SQL dump to detect the DB prefix by looking at well-known tables. */
 	private function detect_imported_prefix_from_sql(string $sqlPath): string {
 		if (!file_exists($sqlPath)) {
 			return '';
@@ -291,6 +342,7 @@ class RestoreService {
 		return $prefix;
 	}
 
+	/** Apply the imported DB prefix for the remainder of the request lifecycle. */
 	private function apply_runtime_prefix(string $desiredPrefix): void {
 		if ($desiredPrefix === '' || $desiredPrefix === $GLOBALS['table_prefix']) {
 			return;
@@ -304,6 +356,7 @@ class RestoreService {
 		}
 	}
 
+	/** Drop all tables with the given drop prefix, preserving tables that match the keep prefix. */
 	private function drop_tables_with_prefix(string $dropPrefix, string $keepPrefix): void {
 		if ($dropPrefix === '' || $dropPrefix === $keepPrefix) {
 			return;
@@ -327,7 +380,7 @@ class RestoreService {
 	private function find_wp_content_dir(string $root): string {
 		$root = wp_normalize_path(untrailingslashit($root));
 		$queue = [$root];
-		$maxDepth = 3;
+		$maxDepth = self::WP_CONTENT_SEARCH_MAX_DEPTH;
 		$depth = 0;
 		while (!empty($queue) && $depth <= $maxDepth) {
 			$next = [];
@@ -351,6 +404,7 @@ class RestoreService {
 		return '';
 	}
 
+	/** Locate a SQL file within the extracted archive. */
 	private function find_sql_file(string $root): string {
 		$root = wp_normalize_path(untrailingslashit($root));
 		if (!is_dir($root)) return '';
@@ -366,6 +420,7 @@ class RestoreService {
 		return '';
 	}
 
+	/** Restore the preserved backup directory setting and ensure it exists and is protected. */
 	private function restore_preserved_backup_dir(string $backupDir): void {
 		$settings = get_option('staging2live_settings', []);
 		$settings = is_array($settings) ? $settings : [];
@@ -388,6 +443,7 @@ class RestoreService {
 		}
 	}
 
+	/** Ensure that URLs in the DB match the expected current site URL using metadata. */
 	private function ensure_live_url_canonical(string $zipPath): void {
 		$dir = dirname($zipPath);
 		$base = basename($zipPath, '.zip');
@@ -402,19 +458,15 @@ class RestoreService {
 		if ($current === $target) {
 			return;
 		}
-		if (defined('WP_CLI') && WP_CLI) {
-			$cmd = sprintf(
-				'search-replace %s %s --all-tables-with-prefix --skip-columns=guid --precise --quiet',
-				escapeshellarg($current),
-				escapeshellarg($target)
-			);
-			\WP_CLI::runcommand($cmd, [ 'return' => 'all', 'exit_error' => false ]);
-		}
+		$this->run_wp_cli_search_replace($current, $target);
 		// Best-effort options update regardless of CLI
 		update_option('siteurl', $target);
 		update_option('home', $target);
 	}
 
+	/**
+	 * Enforce the provided URL as canonical by updating options and running search/replace when possible.
+	 */
 	private function ensure_live_url_canonical_explicit(string $dbPrefix, string $targetUrl): void {
 		global $wpdb;
 		$target = rtrim($targetUrl, '/');
@@ -422,26 +474,21 @@ class RestoreService {
 		$optionsTable = $dbPrefix . 'options';
 		$wpdb->query($wpdb->prepare("UPDATE `$optionsTable` SET option_value=%s WHERE option_name IN ('siteurl','home')", $target));
 		// Also run a broader search/replace when WP-CLI is available (safer for serialized data)
-		if (defined('WP_CLI') && WP_CLI) {
-			$cmd = sprintf(
-				'search-replace %s %s --all-tables-with-prefix --skip-columns=guid --precise --quiet',
-				escapeshellarg(rtrim(site_url(), '/')),
-				escapeshellarg($target)
-			);
-			\WP_CLI::runcommand($cmd, [ 'return' => 'all', 'exit_error' => false ]);
-		}
+		$this->run_wp_cli_search_replace(rtrim(site_url(), '/'), $target);
 	}
 
+	/** Persist the current site URLs prior to DB import for later inspection. */
 	private function persist_current_site_urls(string $backupDir, string $siteurl, string $home): void {
 		$meta = [
 			'siteurl' => $siteurl,
 			'home' => $home,
 			'saved_at' => gmdate('c'),
 		];
-		$path = wp_normalize_path(untrailingslashit($backupDir) . '/.staging2live-siteurl.json');
+		$path = wp_normalize_path(untrailingslashit($backupDir) . '/' . self::SITEURL_META_FILENAME);
 		@file_put_contents($path, wp_json_encode($meta, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 	}
 
+	/** Recursively remove a directory. */
 	private function rrmdir(string $dir): void {
 		$dir = wp_normalize_path($dir);
 		if (!is_dir($dir)) return;
@@ -457,6 +504,18 @@ class RestoreService {
 			}
 		}
 		@rmdir($dir);
+	}
+
+	/** Run a WP-CLI search/replace operation when WP-CLI is available. */
+	private function run_wp_cli_search_replace(string $fromUrl, string $toUrl): void {
+		if (defined('WP_CLI') && WP_CLI && class_exists('\\WP_CLI')) {
+			$cmd = sprintf(
+				'search-replace %s %s --all-tables-with-prefix --skip-columns=guid --precise --quiet',
+				escapeshellarg($fromUrl),
+				escapeshellarg($toUrl)
+			);
+			\WP_CLI::runcommand($cmd, [ 'return' => 'all', 'exit_error' => false ]);
+		}
 	}
 }
 

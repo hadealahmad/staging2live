@@ -1,304 +1,283 @@
-# Copyright (C) 2025 Staging2Live
-# This file is distributed under the GPLv2 or later.
+# Arabic translations for Staging2Live
 msgid ""
 msgstr ""
 "Project-Id-Version: Staging2Live 0.1.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/staging2live\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2025-08-14 00:00+0000\n"
+"PO-Revision-Date: 2025-08-14 00:00+0000\n"
+"Last-Translator: YOUR NAME <you@example.com>\n"
+"Language-Team: Arabic\n"
+"Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-08-14T10:24:33+00:00\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.12.0\n"
+"X-Generator: Handwritten\n"
 "X-Domain: staging2live\n"
+"Plural-Forms: nplurals=6; plural=(n==0?0:n==1?1:n==2?2:(n%100>=3 && n%100<=10)?3:(n%100>=11 && n%100<=99)?4:5);\n"
 
-#. Plugin Name of the plugin
-#. Author of the plugin
 #: staging2live.php
-#: includes/Admin/AdminPage.php:13
-#: includes/Admin/AdminPage.php:14
-#: includes/Admin/AdminPage.php:143
 msgid "Staging2Live"
-msgstr ""
+msgstr "Staging2Live"
 
-#. Description of the plugin
 #: staging2live.php
 msgid "Backup a staging site and restore it to a live site with URL replacement, zipping, and admin management."
-msgstr ""
+msgstr "نسخ احتياطي لموقع التجربة واستعادته إلى موقع الإنتاج مع استبدال الروابط والضغط والإدارة من لوحة التحكم."
 
 #: includes/Admin/AdminPage.php:43
 msgid "General Settings"
-msgstr ""
+msgstr "الإعدادات العامة"
 
 #: includes/Admin/AdminPage.php:45
 msgid "Configure URLs and backup directory for Staging2Live."
-msgstr ""
+msgstr "تهيئة الروابط ومجلد النسخ الاحتياطي لإضافة Staging2Live."
 
 #: includes/Admin/AdminPage.php:52
 msgid "Staging URL"
-msgstr ""
+msgstr "رابط الموقع التجريبي"
 
 #: includes/Admin/AdminPage.php:60
 msgid "Live URL"
-msgstr ""
+msgstr "رابط الموقع المباشر"
 
 #: includes/Admin/AdminPage.php:68
 msgid "Backup Directory"
-msgstr ""
+msgstr "مجلد النسخ الاحتياطي"
 
 #: includes/Admin/AdminPage.php:76
 msgid "Retention (number of backups to keep)"
-msgstr ""
+msgstr "الاحتفاظ (عدد النسخ الاحتياطية المراد الاحتفاظ بها)"
 
 #: includes/Admin/AdminPage.php:84
 msgid "Create safety backup before restore"
-msgstr ""
+msgstr "إنشاء نسخة احتياطية آمنة قبل الاستعادة"
 
 #: includes/Admin/AdminPage.php:134
 msgid "Enable automatic safety backup before restore"
-msgstr ""
+msgstr "تمكين إنشاء نسخة احتياطية آمنة تلقائيًا قبل الاستعادة"
 
-#: includes/Admin/AdminPage.php:145
-#: staging2live.php:115
+#: includes/Admin/AdminPage.php:145 staging2live.php:115
 msgid "Backups"
-msgstr ""
+msgstr "النسخ الاحتياطية"
 
 #: includes/Admin/AdminPage.php:146
 msgid "Settings"
-msgstr ""
+msgstr "الإعدادات"
 
 #: includes/Admin/AdminPage.php:174
 msgid "Upload Backup Files"
-msgstr ""
+msgstr "رفع ملفات النسخة الاحتياطية"
 
 #: includes/Admin/AdminPage.php:175
 msgid "Upload a matching pair of ZIP and JSON files with the same basename."
-msgstr ""
+msgstr "قم برفع ملفي ZIP وJSON متطابقين بنفس الاسم الأساسي."
 
 #: includes/Admin/AdminPage.php:180
 msgid "ZIP file"
-msgstr ""
+msgstr "ملف ZIP"
 
 #: includes/Admin/AdminPage.php:181
 msgid "JSON file"
-msgstr ""
+msgstr "ملف JSON"
 
 #: includes/Admin/AdminPage.php:184
 msgid "Unknown"
-msgstr ""
+msgstr "غير معروف"
 
 #: includes/Admin/AdminPage.php:188
 msgid "Server upload limits:"
-msgstr ""
+msgstr "حدود الرفع على الخادم:"
 
 #: includes/Admin/AdminPage.php:188
 #, php-format
 msgid "Max upload size: %s (upload_max_filesize=%s, post_max_size=%s, max_file_uploads=%s)"
-msgstr ""
+msgstr "أقصى حجم للرفع: %s (upload_max_filesize=%s، post_max_size=%s، max_file_uploads=%s)"
 
 #: includes/Admin/AdminPage.php:189
 msgid "Upload Backup"
-msgstr ""
+msgstr "رفع النسخة الاحتياطية"
 
 #: includes/Admin/AdminPage.php:195
 msgid "Orphaned Files"
-msgstr ""
+msgstr "ملفات يتيمة"
 
 #: includes/Admin/AdminPage.php:196
 msgid "These files have no matching ZIP/JSON pair. You can delete them."
-msgstr ""
+msgstr "هذه الملفات لا تحتوي على زوج ZIP/JSON متطابق. يمكنك حذفها."
 
 #: includes/Admin/AdminPage.php:197
 msgid "File"
-msgstr ""
+msgstr "ملف"
 
 #: includes/Admin/AdminPage.php:197
 msgid "Action"
-msgstr ""
+msgstr "إجراء"
 
 #: includes/Admin/AdminPage.php:200
 msgid "Delete this file?"
-msgstr ""
+msgstr "هل تريد حذف هذا الملف؟"
 
-#: includes/Admin/AdminPage.php:200
-#: includes/Admin/AdminPage.php:272
+#: includes/Admin/AdminPage.php:200 includes/Admin/AdminPage.php:272
 msgid "Delete"
-msgstr ""
+msgstr "حذف"
 
 #: includes/Admin/AdminPage.php:212
 msgid "Backup deleted."
-msgstr ""
+msgstr "تم حذف النسخة الاحتياطية."
 
 #: includes/Admin/AdminPage.php:216
 msgid "Restore completed."
-msgstr ""
+msgstr "اكتملت عملية الاستعادة."
 
 #: includes/Admin/AdminPage.php:216
 msgid "Restore failed. Check logs."
-msgstr ""
+msgstr "فشلت عملية الاستعادة. تحقق من السجلات."
 
 #: includes/Admin/AdminPage.php:220
 msgid "Backup created."
-msgstr ""
+msgstr "تم إنشاء النسخة الاحتياطية."
 
 #: includes/Admin/AdminPage.php:220
 msgid "Backup failed. Check logs."
-msgstr ""
+msgstr "فشل إنشاء النسخة الاحتياطية. تحقق من السجلات."
 
 #: includes/Admin/AdminPage.php:224
 msgid "Log cleared."
-msgstr ""
+msgstr "تم مسح السجل."
 
 #: includes/Admin/AdminPage.php:224
 msgid "Failed to clear log."
-msgstr ""
+msgstr "فشل مسح السجل."
 
 #: includes/Admin/AdminPage.php:231
 msgid "Create Backup"
-msgstr ""
+msgstr "إنشاء نسخة احتياطية"
 
 #: includes/Admin/AdminPage.php:232
 msgid "Download Log"
-msgstr ""
+msgstr "تنزيل السجل"
 
 #: includes/Admin/AdminPage.php:233
 msgid "Clear Log"
-msgstr ""
+msgstr "مسح السجل"
 
 #: includes/Admin/AdminPage.php:235
 msgid "Available backups"
-msgstr ""
+msgstr "النسخ الاحتياطية المتاحة"
 
 #: includes/Admin/AdminPage.php:238
 msgid "Backup"
-msgstr ""
+msgstr "نسخة احتياطية"
 
 #: includes/Admin/AdminPage.php:239
 msgid "Size"
-msgstr ""
+msgstr "الحجم"
 
 #: includes/Admin/AdminPage.php:240
 msgid "Site URL"
-msgstr ""
+msgstr "رابط الموقع"
 
 #: includes/Admin/AdminPage.php:241
 msgid "Admin"
-msgstr ""
+msgstr "المسؤول"
 
 #: includes/Admin/AdminPage.php:242
 msgid "Date"
-msgstr ""
+msgstr "التاريخ"
 
 #: includes/Admin/AdminPage.php:243
 msgid "Actions"
-msgstr ""
+msgstr "الإجراءات"
 
 #: includes/Admin/AdminPage.php:246
 msgid "No backups found."
-msgstr ""
+msgstr "لم يتم العثور على نسخ احتياطية."
 
 #: includes/Admin/AdminPage.php:267
 msgid "Force URLs to current site"
-msgstr ""
+msgstr "فرض الروابط إلى الموقع الحالي"
 
 #: includes/Admin/AdminPage.php:268
 msgid "Restore"
-msgstr ""
+msgstr "استعادة"
 
 #: includes/Admin/AdminPage.php:270
 msgid "Download Zip"
-msgstr ""
+msgstr "تنزيل ZIP"
 
 #: includes/Admin/AdminPage.php:271
 msgid "Download JSON"
-msgstr ""
+msgstr "تنزيل JSON"
 
 #: includes/Admin/AdminPage.php:272
 msgid "Delete this backup?"
-msgstr ""
+msgstr "هل تريد حذف هذه النسخة الاحتياطية؟"
 
 #: includes/Admin/AdminPage.php:282
 msgid "Backup directory"
-msgstr ""
+msgstr "مجلد النسخ الاحتياطي"
 
 #: includes/Admin/AdminPage.php:282
 msgid "Writable"
-msgstr ""
+msgstr "قابل للكتابة"
 
 #: includes/Admin/AdminPage.php:282
 msgid "Not writable"
-msgstr ""
+msgstr "غير قابل للكتابة"
 
 #: includes/Admin/AdminPage.php:283
 msgid "WP-CLI available"
-msgstr ""
+msgstr "WP-CLI متاح"
 
-#: includes/Admin/AdminPage.php:283
-#: includes/Admin/AdminPage.php:284
-#: includes/Admin/AdminPage.php:287
-#: includes/Admin/AdminPage.php:288
+#: includes/Admin/AdminPage.php:283 includes/Admin/AdminPage.php:284 includes/Admin/AdminPage.php:287 includes/Admin/AdminPage.php:288
 msgid "Yes"
-msgstr ""
+msgstr "نعم"
 
-#: includes/Admin/AdminPage.php:283
-#: includes/Admin/AdminPage.php:284
-#: includes/Admin/AdminPage.php:287
-#: includes/Admin/AdminPage.php:288
+#: includes/Admin/AdminPage.php:283 includes/Admin/AdminPage.php:284 includes/Admin/AdminPage.php:287 includes/Admin/AdminPage.php:288
 msgid "No"
-msgstr ""
+msgstr "لا"
 
 #: includes/Admin/AdminPage.php:284
 msgid "ZipArchive"
-msgstr ""
+msgstr "ZipArchive"
 
 #: includes/Admin/AdminPage.php:287
 msgid "mysqldump"
-msgstr ""
+msgstr "mysqldump"
 
 #: includes/Admin/AdminPage.php:288
 msgid "mysql (client)"
-msgstr ""
+msgstr "mysql (عميل)"
 
 #: includes/Admin/AdminPage.php:289
 msgid "Diagnostics"
-msgstr ""
+msgstr "التشخيص"
 
 #: includes/Admin/AdminPage.php:291
 msgid "Check"
-msgstr ""
+msgstr "الفحص"
 
 #: includes/Admin/AdminPage.php:291
 msgid "Value"
-msgstr ""
+msgstr "القيمة"
 
 #: includes/Admin/AdminPage.php:291
 msgid "Status"
-msgstr ""
+msgstr "الحالة"
 
-#: includes/Admin/AdminPage.php:364
-#: includes/Admin/AdminPage.php:397
-#: includes/Admin/AdminPage.php:411
-#: includes/Admin/AdminPage.php:436
-#: includes/Admin/AdminPage.php:471
-#: includes/Admin/AdminPage.php:522
-#: includes/Admin/AdminPage.php:542
-#: includes/Admin/AdminPage.php:559
+#: includes/Admin/AdminPage.php:364 includes/Admin/AdminPage.php:397 includes/Admin/AdminPage.php:411 includes/Admin/AdminPage.php:436 includes/Admin/AdminPage.php:471 includes/Admin/AdminPage.php:522 includes/Admin/AdminPage.php:542 includes/Admin/AdminPage.php:559
 msgid "Insufficient permissions"
-msgstr ""
+msgstr "صلاحيات غير كافية"
 
-#: includes/Admin/AdminPage.php:420
-#: includes/Admin/AdminPage.php:443
-#: includes/Admin/AdminPage.php:460
-#: includes/Admin/AdminPage.php:479
+#: includes/Admin/AdminPage.php:420 includes/Admin/AdminPage.php:443 includes/Admin/AdminPage.php:460 includes/Admin/AdminPage.php:479
 msgid "Invalid file"
-msgstr ""
+msgstr "ملف غير صالح"
 
 #: includes/Admin/AdminPage.php:487
 msgid "File not found"
-msgstr ""
+msgstr "الملف غير موجود"
 
 #: includes/Admin/AdminPage.php:530
 msgid "Log file not found"
-msgstr ""
+msgstr "لم يتم العثور على ملف السجل"
+
+
