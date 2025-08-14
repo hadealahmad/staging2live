@@ -1,0 +1,17 @@
+# OS/IDE
+.DS_Store
+Thumbs.db
+*.log
+
+# Build artifacts
+staging2live-*.zip
+
+# Local backups directory (if present in a test WP install)
+wp-content/staging2live-backups/
+
+# Optional embedded WP-CLI phar
+staging2live/bin/wp-cli.phar
+
+# Composer vendor (if added later)
+vendor/
+composer.lock

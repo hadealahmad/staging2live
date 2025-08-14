@@ -1,0 +1,7 @@
+(function($){
+	$(function(){
+		// placeholder
+	});
+})(jQuery);
+
+

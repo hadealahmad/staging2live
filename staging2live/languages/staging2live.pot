@@ -1,0 +1,9 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Staging2Live 0.1.0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Staging2Live\n"
+
+# Placeholder POT file. Use wp i18n make-pot to regenerate.
